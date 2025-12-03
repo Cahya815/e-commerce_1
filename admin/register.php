@@ -1,27 +1,34 @@
 <?php
-include '../config/database.php';
-$regis_message = "";
+include '../config/database.php'; // Koneksi ke $conn
 session_start();
-try {
-    if (isset($_POST["register"])) {
-        $username = $_POST["username"];
-        $password = $_POST["password"];
-        $hash_password = hash("sha256", $password);
+$regis_message = "";
 
-        $input = "INSERT INTO users (username, password) VALUES ('$username', '$hash_password')";
+// ----------------------------------------------------
+// LOGIKA REGISTER HARUS DI ATAS SEMUA OUTPUT
+// ----------------------------------------------------
+if (isset($_POST["register"])) {
+    $name = $_POST["name"];
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+
+
+
+    try {
+        // Query disesuaikan dengan kolom baru (name, email, password)
+        $input = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$password')";
+
         if ($conn->query($input)) {
-            $regis_message = "Registrasi Berhasil";
+            $regis_message = "Registrasi Berhasil! Silakan Login.";
         } else {
-            $regis_message = "Registrasi Gagal: ";
+            // Ini akan menangkap jika ada error unik/primary key
+            $regis_message = "Registrasi Gagal. Email mungkin sudah terdaftar.";
         }
+    } catch (mysqli_sql_exception $e) {
+        // Ini jarang dibutuhkan jika logika di atas sudah baik, tapi tetap aman
+        $regis_message = "Terjadi kesalahan database: " . $e->getMessage();
     }
-} catch (mysqli_sql_exception) {
-    $regis_message = "username habis ";
-    $conn->close();
 }
-
-
-
+$conn->close(); // Tutup koneksi setelah selesai berinteraksi dengan DB
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +36,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belajar PHP</title>
+    <title>REGISTER</title>
 </head>
 
 <body>
@@ -37,8 +44,9 @@ try {
     <h2>REGISTER AKUN</h2>
     <i><?= $regis_message ?></i>
     <form action="register.php" method="POST">
-        <input type="text" placeholder="username" name="username"><br>
-        <input type="password" placeholder="password" name="password"><br>
+        <input type="text" placeholder="Nama Lengkap" name="name"><br>
+        <input type="email" placeholder="Email (Username)" name="email"><br>
+        <input type="password" placeholder="Password" name="password"><br>
         <button type="submit" name="register">Register</button>
     </form>
 </body>
