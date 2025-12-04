@@ -32,7 +32,7 @@ if (isset($_POST["login"])) {
 }
 $conn->close(); // Tutup koneksi jika login gagal/atau saat halaman dimuat biasa
 ?>
-<!doctype html>
+    <!doctype html>
 <html lang="en">
  <head>
   <meta charset="UTF-8">

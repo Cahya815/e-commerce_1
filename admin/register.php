@@ -61,13 +61,13 @@ if (isset($_POST["register"])) {
         exit();
     }
 
-    $stmt_insert->close();
+
 }
 
 // Tutup koneksi setelah selesai berinteraksi dengan DB
 $conn->close(); 
 ?>
-<!doctype html>
+    <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
