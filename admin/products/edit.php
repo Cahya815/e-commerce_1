@@ -29,7 +29,7 @@ if ($result_categories) {
 if ($product_id > 0 && $_SERVER["REQUEST_METHOD"] !== "POST") {
     $sql_get = "SELECT id, name, description, price, stock, category_id, image FROM products WHERE id = $product_id";
     $result_get = mysqli_query($conn, $sql_get);
-    
+
     if ($result_get && mysqli_num_rows($result_get) === 1) {
         $product = mysqli_fetch_assoc($result_get);
         mysqli_free_result($result_get);
@@ -39,7 +39,7 @@ if ($product_id > 0 && $_SERVER["REQUEST_METHOD"] !== "POST") {
         header("Location: index.php?status=not_found");
         exit();
     }
-} 
+}
 // --- FASE 2: Proses Update Data (POST) ---
 elseif ($_SERVER["REQUEST_METHOD"] === "POST" && $product_id > 0) {
     // Ambil dan bersihkan data input (gunakan data dari POST)
@@ -49,7 +49,7 @@ elseif ($_SERVER["REQUEST_METHOD"] === "POST" && $product_id > 0) {
     $stock = (int)$_POST['stock'];
     $category_id = (int)$_POST['category_id'];
     $current_image = mysqli_real_escape_string($conn, $_POST['current_image']); // Ambil nama gambar lama
-    $image_name = $current_image; 
+    $image_name = $current_image;
 
     // Re-assign data POST ke variabel $product untuk mengisi ulang form jika ada error
     $product = [
@@ -80,7 +80,7 @@ elseif ($_SERVER["REQUEST_METHOD"] === "POST" && $product_id > 0) {
                        category_id = $category_id, 
                        image = '$image_name' 
                        WHERE id = $product_id";
-        
+
         if (mysqli_query($conn, $sql_update)) {
             // Sukses: Redirect ke halaman index (PRG Pattern)
             mysqli_close($conn);
@@ -97,9 +97,9 @@ elseif ($product_id === 0) {
     exit();
 }
 
-mysqli_close($conn); 
+mysqli_close($conn);
 
-include '../partials/admin_header.php'; 
+include '../partials/admin_header.php';
 ?>
 
 <div class="container">
@@ -116,63 +116,63 @@ include '../partials/admin_header.php';
     <?php endif; ?>
 
     <?php if ($product): ?>
-    <form action="edit.php?id=<?php echo $product_id; ?>" method="POST" enctype="multipart/form-data">
-        
-        <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($product['image'] ?? ''); ?>">
-        
-        <div class="form-group">
-            <label for="name">Nama Produk:</label>
-            <input type="text" id="name" name="name" required 
-                   value="<?php echo htmlspecialchars($product['name'] ?? ''); ?>">
-        </div>
+        <form action="edit.php?id=<?php echo $product_id; ?>" method="POST" enctype="multipart/form-data">
 
-        <div class="form-group">
-            <label for="category_id">Kategori:</label>
-            <select id="category_id" name="category_id" required>
-                <option value="0">-- Pilih Kategori --</option>
-                <?php foreach ($categories as $category): ?>
-                    <option value="<?php echo $category['id']; ?>"
-                        <?php echo ($product['category_id'] === $category['id']) ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($category['name']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="description">Deskripsi:</label>
-            <textarea id="description" name="description"><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
-        </div>
+            <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($product['image'] ?? ''); ?>">
 
-        <div class="form-group">
-            <label for="price">Harga (Rp):</label>
-            <input type="number" id="price" name="price" required min="1" 
-                   value="<?php echo htmlspecialchars($product['price'] ?? ''); ?>">
-        </div>
+            <div class="form-group">
+                <label for="name">Nama Produk:</label>
+                <input type="text" id="name" name="name" required
+                    value="<?php echo htmlspecialchars($product['name'] ?? ''); ?>">
+            </div>
 
-        <div class="form-group">
-            <label for="stock">Stok:</label>
-            <input type="number" id="stock" name="stock" required min="0" 
-                   value="<?php echo htmlspecialchars($product['stock'] ?? ''); ?>">
-        </div>
+            <div class="form-group">
+                <label for="category_id">Kategori:</label>
+                <select id="category_id" name="category_id" required>
+                    <option value="0">-- Pilih Kategori --</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?php echo $category['id']; ?>"
+                            <?php echo ($product['category_id'] === $category['id']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($category['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label>Gambar Saat Ini:</label>
-            <?php if (!empty($product['image'])): ?>
-                <img src="../../uploads/<?php echo htmlspecialchars($product['image']); ?>" width="100" class="d-block mb-2">
-            <?php else: ?>
-                <p>[Gambar Tidak Ada]</p>
-            <?php endif; ?>
-            <label for="image">Ganti Gambar (opsional):</label>
-            <input type="file" id="image" name="image" accept="image/*">
-        </div>
+            <div class="form-group">
+                <label for="description">Deskripsi:</label>
+                <textarea id="description" name="description"><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-        <a href="index.php" class="btn btn-secondary">Batal</a>
-    </form>
+            <div class="form-group">
+                <label for="price">Harga (Rp):</label>
+                <input type="number" id="price" name="price" required min="1"
+                    value="<?php echo htmlspecialchars($product['price'] ?? ''); ?>">
+            </div>
+
+            <div class="form-group">
+                <label for="stock">Stok:</label>
+                <input type="number" id="stock" name="stock" required min="0"
+                    value="<?php echo htmlspecialchars($product['stock'] ?? ''); ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Gambar Saat Ini:</label>
+                <?php if (!empty($product['image'])): ?>
+                    <img src="../../uploads/<?php echo htmlspecialchars($product['image']); ?>" width="100" class="d-block mb-2">
+                <?php else: ?>
+                    <p>[Gambar Tidak Ada]</p>
+                <?php endif; ?>
+                <label for="image">Ganti Gambar (opsional):</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            <a href="index.php" class="btn btn-secondary">Batal</a>
+        </form>
     <?php endif; ?>
 </div>
 
-<?php 
-include '../partials/admin_footer.php'; 
+<?php
+include '../partials/admin_footer.php';
 ?>
